@@ -46,7 +46,11 @@ def escribir_en_sheets(spreadsheet_id, sheet_name, df):
 
 # ── Procesamiento ─────────────────────────────────────────────────────
 def procesar_ventas(spreadsheet_id, sheet_name, fecha_ini=None, fecha_fin=None):
-    url = f"https://docs.google.com/spreadsheets/d/{spreadsheet_id}/export?format=csv&sheet={sheet_name}"
+     # Obtener gid de la hoja por nombre
+    sh = gc.open_by_key(spreadsheet_id)
+    ws = sh.worksheet(sheet_name)
+    gid = ws.id
+    url = f"https://docs.google.com/spreadsheets/d/{spreadsheet_id}/export?format=csv&gid={gid}"
     df = pd.read_csv(url, dtype=str)
     df = df.drop_duplicates()
 

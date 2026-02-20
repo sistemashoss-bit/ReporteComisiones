@@ -1,0 +1,7 @@
+flask==3.0.3
+pandas==2.2.2
+numpy==1.26.4
+duckdb==0.10.3
+gspread==6.1.2
+google-auth==2.29.0
+requests==2.31.0

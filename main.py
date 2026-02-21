@@ -46,11 +46,20 @@ def escribir_en_sheets(spreadsheet_id, sheet_name, df):
     for _, row in df.iterrows():
         fila = []
         for valor in row:
-            # Si es numérico, enviar como número; si no, como string
+            # Si es NaN
             if pd.isna(valor):
                 fila.append('')
-            elif isinstance(valor, (int, float)) and not isinstance(valor, bool):
-                fila.append(valor)
+            # Si es datetime/date, formatear como YYYY-MM-DD
+            elif isinstance(valor, (pd.Timestamp, np.datetime64)):
+                fila.append(pd.Timestamp(valor).strftime('%Y-%m-%d'))
+            # Si es numérico (int/float), enviar como número
+            elif isinstance(valor, (int, float, np.integer, np.floating)) and not isinstance(valor, bool):
+                # Convertir a int si no tiene decimales
+                if isinstance(valor, float) and valor.is_integer():
+                    fila.append(int(valor))
+                else:
+                    fila.append(valor)
+            # Si es string
             else:
                 fila.append(str(valor))
         datos.append(fila)

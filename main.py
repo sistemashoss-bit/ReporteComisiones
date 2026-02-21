@@ -39,14 +39,9 @@ def escribir_en_sheets(spreadsheet_id, sheet_name, df):
         ws = sh.worksheet(sheet_name)
     except gspread.exceptions.WorksheetNotFound:
         ws = sh.add_worksheet(title=sheet_name, rows=5000, cols=50)
-
     ws.clear()
-
-    df_export = df.copy()
-    for col in df_export.select_dtypes(include="object").columns:
-        df_export[col] = df_export[col].astype(str)
-
-    ws.update([df_export.columns.tolist()] + df_export.values.tolist())
+    ws.update([df.columns.tolist()] + df.astype(str).values.tolist())
+    print(f"Escrito en '{sheet_name}': {len(df)} filas", file=sys.stderr)
 
 
 # ── Procesamiento ─────────────────────────────────────────────────────

@@ -211,7 +211,7 @@ def procesar_ventas(spreadsheet_id, sheet_name, fecha_ini=None, fecha_fin=None):
     # Asignar la fecha mayor a ambas columnas
     df.loc[mask, "Fecha de captura"] = fecha_mayor
     df.loc[mask, "Fecha de venta"] = fecha_mayor
-    df.drop(columns=['Saldo Restante','Fecha de captura'], inplace=True)
+    df.drop(columns=['Saldo Restante','Fecha de captura','Importe Total'], inplace=True)
 
     
 

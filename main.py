@@ -212,6 +212,12 @@ def procesar_ventas(spreadsheet_id, sheet_name, fecha_ini=None, fecha_fin=None):
     df.loc[mask, "Fecha de captura"] = fecha_mayor
     df.loc[mask, "Fecha de venta"] = fecha_mayor
     df.drop(columns=['Saldo Restante','Fecha de captura','Importe Total'], inplace=True)
+    df = df[~(
+    ((df["Tipo de Pago"] == "Puerta pagada (anticipo)") &
+     (df["Articulo"] == "Instalacion")) |
+
+    ((df["Tipo de Pago"] == "Instalación") &
+     (df["Articulo"] != "Instalacion")))]
 
     
 

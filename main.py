@@ -142,29 +142,29 @@ def procesar_ventas(spreadsheet_id, sheet_name, fecha_ini=None, fecha_fin=None):
 
     df['Total'] = df.apply(calcular_total, axis=1)
 
-def aplanar_df(df):
-    filas = []
+    def aplanar_df(df):
+        filas = []
 
-    for _, row in df.iterrows():
-        unidades  = [u.strip() for u in str(row['Unidades Vendidas']).split(',') if u.strip()]
-        articulos = [a.strip() for a in str(row['NotaVenta']).split(',') if a.strip()]
-        totales   = [t.strip() for t in str(row['Total']).split(',') if t.strip()]
+        for _, row in df.iterrows():
+            unidades  = [u.strip() for u in str(row['Unidades Vendidas']).split(',') if u.strip()]
+            articulos = [a.strip() for a in str(row['NotaVenta']).split(',') if a.strip()]
+            totales   = [t.strip() for t in str(row['Total']).split(',') if t.strip()]
 
-        n = min(len(unidades), len(articulos), len(totales))
+            n = min(len(unidades), len(articulos), len(totales))
 
-        for i in range(n):
-            cantidad = int(unidades[i]) if unidades[i].isdigit() else 1
-            total    = int(''.join(filter(str.isdigit, totales[i])) or 0)
+            for i in range(n):
+                cantidad = int(unidades[i]) if unidades[i].isdigit() else 1
+                total    = int(''.join(filter(str.isdigit, totales[i])) or 0)
 
-            # Expandir por cantidad
-            for _ in range(cantidad):
-                fila = row.to_dict()
-                fila['Unidades Vendidas'] = 1
-                fila['NotaVenta']         = articulos[i]
-                fila['Total']             = total
-                filas.append(fila)
+                # Expandir por cantidad
+                for _ in range(cantidad):
+                    fila = row.to_dict()
+                    fila['Unidades Vendidas'] = 1
+                    fila['NotaVenta']         = articulos[i]
+                    fila['Total']             = total
+                    filas.append(fila)
 
-    return pd.DataFrame(filas)
+        return pd.DataFrame(filas)
 
     df = aplanar_df(df)
 

@@ -64,7 +64,7 @@ def escribir_en_sheets(spreadsheet_id, sheet_name, df):
                 fila.append(str(valor))
         datos.append(fila)
     
-    ws.update(datos)
+    ws.update(datos, value_input_option='USER_ENTERED')
     print(f"Escrito en '{sheet_name}': {len(df)} filas", file=sys.stderr)
 
 

@@ -199,8 +199,11 @@ def procesar_ventas(spreadsheet_id, sheet_name, fecha_ini=None, fecha_fin=None):
         axis=1
         )
 
-    # Crear máscara para Tipo de Pago == "Complemento"
-    mask = df["Tipo de Pago"] == "Complemento"
+        # Lista de tipos de pago a aplicar
+    tipos_pago = ["Complemento", "Puerta pagada (anticipo)", "Instalación"]  # agrega los que necesites
+
+    # Crear máscara para múltiples tipos
+    mask = df["Tipo de Pago"].isin(tipos_pago)
 
     df["Fecha de captura"] = pd.to_datetime(df["Fecha de captura"])
     df["Fecha de venta"] = pd.to_datetime(df["Fecha de venta"])

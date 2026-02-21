@@ -40,7 +40,22 @@ def escribir_en_sheets(spreadsheet_id, sheet_name, df):
     except gspread.exceptions.WorksheetNotFound:
         ws = sh.add_worksheet(title=sheet_name, rows=5000, cols=50)
     ws.clear()
-    ws.update([df.columns.tolist()] + df.astype(str).values.tolist())
+    
+    # Preparar datos respetando tipos numéricos
+    datos = [df.columns.tolist()]
+    for _, row in df.iterrows():
+        fila = []
+        for valor in row:
+            # Si es numérico, enviar como número; si no, como string
+            if pd.isna(valor):
+                fila.append('')
+            elif isinstance(valor, (int, float)) and not isinstance(valor, bool):
+                fila.append(valor)
+            else:
+                fila.append(str(valor))
+        datos.append(fila)
+    
+    ws.update(datos)
     print(f"Escrito en '{sheet_name}': {len(df)} filas", file=sys.stderr)
 
 

@@ -167,8 +167,6 @@ def procesar_ventas(spreadsheet_id, sheet_name, fecha_ini=None, fecha_fin=None):
         lambda x: 'Hoss Center' if str(x).strip().lower().startswith('h') else 'Sucursal'
     )
 
-    df.drop(columns=['Saldo Restante', 'Fecha de captura'], inplace=True, errors='ignore')
-
     def normalizar_sucursal(valor):
         if pd.isna(valor):
             return 'Sin Especificar'
@@ -185,6 +183,29 @@ def procesar_ventas(spreadsheet_id, sheet_name, fecha_ini=None, fecha_fin=None):
         lambda x: 'Instalacion' if str(x).strip().lower().startswith('instalac') else 'Puerta'
     )
 
+    df['Articulo'] = df.apply(
+        lambda row: 'Chapa Digital'
+        if str(row['NotaVenta']).lower().startswith('chapa')
+        else row['Articulo'],
+        axis=1
+        )
+
+    # Crear máscara para Tipo de Pago == "Complemento"
+    mask = df["Tipo de Pago"] == "Complemento"
+
+    df["Fecha de captura"] = pd.to_datetime(df["Fecha de captura"])
+    df["Fecha de venta"] = pd.to_datetime(df["Fecha de venta"])
+
+    # Obtener la fecha mayor por fila
+    fecha_mayor = df.loc[mask, ["Fecha de captura", "Fecha de venta"]].max(axis=1)
+
+    # Asignar la fecha mayor a ambas columnas
+    df.loc[mask, "Fecha de captura"] = fecha_mayor
+    df.loc[mask, "Fecha de venta"] = fecha_mayor
+    df.drop(columns=['Saldo Restante','Fecha de captura'], inplace=True)
+
+    
+
     if fecha_ini and fecha_fin:
         df['Fecha de venta'] = pd.to_datetime(df['Fecha de venta'], errors='coerce')
         df = df[
@@ -194,6 +215,9 @@ def procesar_ventas(spreadsheet_id, sheet_name, fecha_ini=None, fecha_fin=None):
 
     print(f"Ventas procesadas: {len(df)} filas", file=sys.stderr)
     return df
+     
+
+
 
 
 # ── Endpoints ─────────────────────────────────────────────────────────

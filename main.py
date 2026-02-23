@@ -245,6 +245,13 @@ def procesar_ventas(spreadsheet_id, sheet_name, fecha_ini=None, fecha_fin=None):
 
     ((df["Tipo de Pago"] == "Instalación") &
      (df["Articulo"] != "Instalacion")))]
+    df = df[df["NotaVenta"] != "Instalación Chapa Digital"]
+    filtro_inicio = df["NotaVenta"].str.startswith(
+        ("H", "Instalacion", "Instalación", "Chapa"),
+        na=False
+    )
+    df = df[filtro_inicio]
+    df = df.assign(**{"Se Paga": "SI"})
 
     
 

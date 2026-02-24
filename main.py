@@ -224,7 +224,7 @@ def procesar_ventas(spreadsheet_id, sheet_name, fecha_ini=None, fecha_fin=None):
         )
 
         # Lista de tipos de pago a aplicar
-    tipos_pago = ["Complemento", "Puerta pagada (anticipo)", "Instalación","Pago Total"]  # agrega los que necesites
+    tipos_pago = ["Complemento", "Puerta pagada (anticipo)", "Instalación"]  # agrega los que necesites
 
     # Crear máscara para múltiples tipos
     mask = df["Tipo de Pago"].isin(tipos_pago)
@@ -251,7 +251,8 @@ def procesar_ventas(spreadsheet_id, sheet_name, fecha_ini=None, fecha_fin=None):
         na=False
     )
     df = df[filtro_inicio]
-    df.loc[(df["Metodo de Venta"] == "Hoss Center") &(df["Articulo"] != "Puerta"),"Metodo de Venta"] = "Sucursal"
+    df.loc[
+(df["Metodo de Venta"] == "Hoss Center") &(df["Articulo"] != "Puerta"),"Metodo de Venta"] = "Sucursal"
     df = df.assign(**{"Se Paga": "SI"})
 
     

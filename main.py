@@ -224,7 +224,7 @@ def procesar_ventas(spreadsheet_id, sheet_name, fecha_ini=None, fecha_fin=None):
         )
 
         # Lista de tipos de pago a aplicar
-    tipos_pago = ["Complemento"]  # agrega los que necesites
+    tipos_pago = ["Complemento", "Puerta pagada (anticipo)"]  # agrega los que necesites
 
     # Crear máscara para múltiples tipos
     mask = df["Tipo de Pago"].isin(tipos_pago)

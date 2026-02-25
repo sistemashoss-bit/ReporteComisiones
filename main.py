@@ -239,12 +239,24 @@ def procesar_ventas(spreadsheet_id, sheet_name, fecha_ini=None, fecha_fin=None):
     df.loc[mask, "Fecha de captura"] = fecha_mayor
     df.loc[mask, "Fecha de venta"] = fecha_mayor
     df.drop(columns=['Saldo Restante','Fecha de captura','Importe Total'], inplace=True)
-    df = df[~(
-    ((df["Tipo de Pago"] == "Puerta pagada (anticipo)") &
-     (df["Articulo"] == "Instalacion")) |
+    inst_real = df[
+    (df["Tipo de Pago"] == "Instalación") &
+    (df["Articulo"] == "Instalacion")
+][["Folio", "Sucursal"]].drop_duplicates()
 
-    ((df["Tipo de Pago"] == "Instalación") &
-     (df["Articulo"] != "Instalacion")))]
+    df = df.merge(
+        inst_real.assign(tiene_inst_real=True),
+        on=["Folio", "Sucursal"],
+        how="left"
+    )
+
+    df = df[
+        ~(
+            (df["Tipo de Pago"] == "Puerta pagada (anticipo)") &
+            (df["Articulo"] == "Instalacion") &
+            (df["tiene_inst_real"] == True)
+        )
+    ].drop(columns="tiene_inst_real")
     df = df[df["NotaVenta"] != "Instalación Chapa Digital"]
     filtro_inicio = df["NotaVenta"].str.startswith(
         ("H", "Instalacion", "Instalación", "Chapa"),

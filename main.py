@@ -289,8 +289,13 @@ def procesar_ventas(spreadsheet_id, sheet_name, fecha_ini=None, fecha_fin=None):
         na=False
     )
     df = df[filtro_inicio]
-    df.loc[
-(df["Metodo de Venta"] == "Hoss Center") &(df["Articulo"] != "Puerta"),"Metodo de Venta"] = "Sucursal"
+    df.loc[(df["Metodo de Venta"] == "Hoss Center") &(df["Articulo"] != "Puerta"),"Metodo de Venta"] = "Sucursal"
+    df = df[
+    ~(
+        (df['Articulo'] == 'Chapa Digital') &
+        (df['NotaVenta'].str.strip().str.lower() == 'chapa')
+    )
+    ]
     df = df.assign(**{"Se Paga": "SI"})
 
     
